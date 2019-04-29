@@ -13,11 +13,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position += new Vector3(1, 0, 0);
-    }
+        transform.position += transform.right * Time.deltaTime * 1;    }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if (other.gameObject.name == "Elephant")
+        {
         Destroy(other.gameObject);
-    }
+        }
+}
 }

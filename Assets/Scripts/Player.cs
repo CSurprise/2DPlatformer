@@ -2,17 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Audio;
 public class Player : MonoBehaviour
 {
     // variable to hold a reference to our SpriteRenderer component
     public SpriteRenderer spriteRenderer;
     public Animator animator;
+    public AudioSource sound;
+    public AudioClip boing;
     // public CharacterController controller;
-
+    
     public float speed = 40f;
+    
 
-    private float horizonalMove = 0f;
     private bool jump = false;
+    public float jumpSpeed = 5f;
+    private Rigidbody2D rigidBody;
+
+    private void Start()
+    {
+        rigidBody = GetComponent<Rigidbody2D> ();
+
+    }
 
     // Update is called once per frame
     void Update()
@@ -29,7 +40,7 @@ public class Player : MonoBehaviour
             spriteRenderer.flipX = false;
             animator.SetBool("OnClick", true);
             transform.position += transform.right * Time.deltaTime * 1 * 2;
-            Debug.Log(xAxis);
+            
         }
         else if (Input.GetKey("left"))
         {
@@ -54,8 +65,10 @@ public class Player : MonoBehaviour
 
         if (Input.GetAxis("Jump") == 1 && !jump )
         {
-            transform.position += Vector3.up * 1;
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x,jumpSpeed);
             jump = true;
+            sound.PlayOneShot(boing, PlayerPrefs.GetFloat("SFXVol"));
+            
         }
         
         
@@ -63,7 +76,7 @@ public class Player : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         
-        if (collision.gameObject.name == "Floor")
+        if (collision.gameObject.tag == "grass")
         {
             jump = false;
         }
